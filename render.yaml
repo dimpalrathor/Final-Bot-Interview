@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ai-voice-interview
+    name: voice-interview-bot
     env: python
     plan: starter
     buildCommand: |
