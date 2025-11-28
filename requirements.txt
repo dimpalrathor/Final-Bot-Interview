@@ -1,9 +1,8 @@
-# enhanced_requirements.txt
 speechrecognition==3.10.0
 pyttsx3==2.90
-pyaudio==0.2.11
+pyaudio==0.2.13
 pydub==0.25.1
-numpy==1.24.0
+numpy==1.23.5
 scikit-learn==1.3.0
 textblob==0.17.1
 nltk==3.8.1
@@ -17,10 +16,6 @@ gradio
 whisper
 torch
 soundfile
-numpy
-pyttsx3
-speechrecognition
 python-dotenv
-sentence-transformers   # optional if used
-
-rapidfuzz        
+sentence-transformers
+rapidfuzz
