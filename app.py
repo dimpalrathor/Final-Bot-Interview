@@ -217,7 +217,7 @@ class VoiceInterviewBot:
 
             # 1) Ask role
             # UI first, then speak (so UI updates instantly)
-            yield "🎤 Listening for role..."
+            yield " Listening for role..."
             self.audio.speak("Which role would you like? For example: Python developer or Data Scientist.")
             role_spoken = self.audio.listen(timeout=12)
             logger.info("Raw role (STT): %r", role_spoken)
@@ -232,7 +232,7 @@ class VoiceInterviewBot:
             self.audio.speak(f"You selected {self.role}. Now say easy, medium or hard for difficulty.")
 
             # 2) Ask difficulty
-            yield "🎤 Listening for difficulty…"
+            yield " Listening for difficulty…"
             diff_spoken = self.audio.listen(timeout=8)
             logger.info("Raw difficulty (STT): %r", diff_spoken)
             if not diff_spoken:
@@ -258,7 +258,7 @@ class VoiceInterviewBot:
 
             if not self.questions:
                 self.audio.speak("I couldn't find questions for that role and difficulty. Please try another role or difficulty.")
-                yield "❌ No questions found for your selection. Please restart and try a different role or difficulty."
+                yield " No questions found for your selection. Please restart and try a different role or difficulty."
                 return
 
             # ensure each question has expected fields
@@ -294,7 +294,7 @@ class VoiceInterviewBot:
                 self.current_index = idx
                 qtext = q["question"]
                 # ask — UI updates first, then TTS
-                yield f"Q{idx+1}: {qtext}\n\n🎤 Listening for your answer…"
+                yield f"Q{idx+1}: {qtext}\n\n Listening for your answer…"
                 self.audio.speak(f"Question {idx+1}. {qtext}")
 
                 # listen
@@ -303,7 +303,7 @@ class VoiceInterviewBot:
                 # If stop requested while listening (user clicked End Interview), handle immediately
                 if self.stop_flag:
                     # Keep questions up to and including the current one
-                    self.questions = self.questions[:idx+1]
+                    #self.questions = self.questions[:idx+1]
                     summary_md = self.generate_summary_md()
                     self.audio.speak("Interview ended. Generating summary.")
                     yield summary_md
@@ -365,7 +365,7 @@ class VoiceInterviewBot:
         except Exception as ex:
             logger.exception("Error during interview run: %s", ex)
             self.audio.speak("An error occurred during the interview. Please check the application logs.")
-            yield "❌ An unexpected error occurred. See console for details."
+            yield " An unexpected error occurred. See console for details."
 
 # ----------------------------
 # Enhanced Gradio UI with Modern Design
@@ -583,9 +583,18 @@ body {
 def build_ui():
     bot = VoiceInterviewBot()
 
-    with gr.Blocks(css=custom_css, title="AI Voice Interview Bot", theme=gr.themes.Soft()) as demo:
+    # ❌ OLD
+    # with gr.Blocks(title="AI Voice Interview Bot", theme=gr.themes.Soft()) as demo:
+
+    # ✅ NEW — Works on HuggingFace
+    with gr.Blocks(title="AI Voice Interview Bot") as demo:
+
+        # Keep your custom UI theme!!
+        gr.HTML(f"<style>{custom_css}</style>")
+
 
         gr.Markdown("<h1 id='title'> AI Voice Interview Bot</h1>")
+
         #gr.Markdown("<p id='subtitle'>Experience seamless voice-powered interviews with AI</p>")
 
         with gr.Column(elem_classes="card-box"):
@@ -627,10 +636,5 @@ def build_ui():
 
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 7860))
-
     ui = build_ui()
-    ui.launch(server_name="0.0.0.0", server_port=port)
-
-
+    ui.launch(server_name="127.0.0.1", server_port=7860)
